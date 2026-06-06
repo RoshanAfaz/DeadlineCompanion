@@ -76,6 +76,7 @@ export const Route = createRootRouteWithContext()({
       { title: "Smart Deadline Reminder" },
       { name: "description", content: "AI-powered productivity and deadline tracking" },
       { name: "author", content: "Deadline Companion" },
+      { name: "theme-color", content: "#09090b" },
       { property: "og:title", content: "Smart Deadline Reminder" },
       { property: "og:description", content: "AI-powered productivity and deadline tracking" },
       { property: "og:type", content: "website" },
@@ -85,6 +86,14 @@ export const Route = createRootRouteWithContext()({
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/icon.png",
       },
     ],
   }),
@@ -110,6 +119,17 @@ function RootShell({ children }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((reg) => console.log("PWA Service Worker registered!", reg.scope))
+          .catch((err) => console.error("PWA Service Worker registration failed:", err));
+      });
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
