@@ -4,15 +4,15 @@
   "rewrites": [
     {
       "source": "/_server/:path*",
-      "destination": "https://your-render-service.onrender.com/_server/:path*"
+      "destination": "https://deadlinecompanion.onrender.com/_server/:path*"
     },
     {
       "source": "/_/:path*",
-      "destination": "https://your-render-service.onrender.com/_/:path*"
+      "destination": "https://deadlinecompanion.onrender.com/_/:path*"
     },
     {
       "source": "/api/:path*",
-      "destination": "https://your-render-service.onrender.com/api/:path*"
+      "destination": "https://deadlinecompanion.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
