@@ -184,18 +184,27 @@ async function getDb() {
     return null;
   }
   if (!db) {
-    client = new MongoClient(uri);
-    await client.connect();
-    db = client.db("deadline_companion");
-    // Seed if empty
-    const count = await db.collection("tasks").countDocuments();
-    if (count === 0) {
-      const initialData = await getInitialData();
-      await db.collection("tasks").insertMany(initialData.tasks);
-      await db.collection("users").insertOne(initialData.user);
-      await db.collection("weeklyStats").insertMany(initialData.weeklyStats);
-      await db.collection("aiSuggestions").insertMany(initialData.aiSuggestions);
-      await db.collection("notifications").insertMany(initialData.notifications);
+    try {
+      client = new MongoClient(uri, {
+        serverSelectionTimeoutMS: 5000,
+        connectTimeoutMS: 5000,
+      });
+      await client.connect();
+      db = client.db("deadline_companion");
+      // Seed if empty
+      const count = await db.collection("tasks").countDocuments();
+      if (count === 0) {
+        const initialData = await getInitialData();
+        await db.collection("tasks").insertMany(initialData.tasks);
+        await db.collection("users").insertOne(initialData.user);
+        await db.collection("weeklyStats").insertMany(initialData.weeklyStats);
+        await db.collection("aiSuggestions").insertMany(initialData.aiSuggestions);
+        await db.collection("notifications").insertMany(initialData.notifications);
+      }
+    } catch (err) {
+      console.error("Failed to connect to MongoDB Atlas. Falling back to file DB:", err.message);
+      db = null;
+      return null;
     }
   }
   return db;
